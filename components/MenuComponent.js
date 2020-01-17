@@ -27,7 +27,7 @@ render(){
                 title={item.title}
                 subtitle={item.description}
                 hideChevron={true}
-                onPress={()=>navigate('DishDetail',{dishID: item.id})}
+                onPress={()=>navigate('DishDetail',{dishId: item.id})}
                 leftAvatar={{source:require('./images/buffet.png')}} />
         );
     }
