@@ -9,6 +9,26 @@ import About from './AboutComponent';
 import Contact from './ContactComponent';
 import {createDrawerNavigator,DrawerItems} from 'react-navigation-drawer';
 import {Icon} from 'react-native-elements';
+import {fetchDishes,fetchComments,fetchLeaders,fetchPromos} from '../redux/Actioncreators';
+import {connect} from 'react-redux';
+
+
+const mapStateToProps=state=>{
+    return {
+        dishes:state.dishes,
+        comments:state.comments,
+        promotions:state.promotions,
+        leaders:state.leaders
+    }
+}
+
+const mapDispatchToPros=dispatch=>({
+    fetchDishes:()=>dispatch(fetchDishes()),
+    fetchLeaders:()=>dispatch(fetchLeaders()),
+    fetchComments:()=>dispatch(fetchComments()),
+    fetchPromos:()=>dispatch(fetchPromos())
+
+})
 
 
 const MenuNavigator=createStackNavigator({
@@ -142,6 +162,13 @@ const AppContainer=createAppContainer(MainNavigator);
 class Main extends Component{
 
 
+    componentDidMount(){
+        this.props.fetchComments();
+        this.props.fetchDishes();
+        this.props.fetchLeaders();
+        this.props.fetchPromos();
+    }
+
     render(){
     return(
         <View style={{flex:1,paddingTop:Platform.OS ==='ios' ? 0: Expo.Constants.statusBarHeight }}>
@@ -176,5 +203,5 @@ const styles=StyleSheet.create({
     }
 });
 
-export default Main;
+export default connect(mapStateToProps,mapDispatchToPros)(Main);
 

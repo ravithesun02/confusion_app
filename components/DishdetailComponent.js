@@ -1,9 +1,15 @@
 import React,{Component} from 'react';
 import {View ,Text,ScrollView,FlatList} from 'react-native';
 import {Card, Icon} from 'react-native-elements';
-import {DISHES} from '../shared/dishes';
-import { COMMENTS } from '../shared/comments';
+import {connect} from 'react-redux';
+import { baseURL } from '../shared/baseUrl';
 
+const mapStateToProps= state=>{
+    return{
+        dishes:state.dishes,
+        comments:state.comments
+    }
+}
 
 function RenderComments(props){
     const comments=props.comments;
@@ -33,7 +39,7 @@ function RenderCard(props){
     if(dish!=null)
     {
         return(
-            <Card featuredTitle={dish.name} image={require('./images/buffet.png')}>
+            <Card featuredTitle={dish.name} image={{uri:baseURL+dish.image}}>
                 <Text style={{margin:10}}>
                     {dish.description}
                 </Text>
@@ -56,8 +62,6 @@ class DishDetail extends Component{
     constructor(props){
         super(props);
         this.state={
-            dishes:DISHES,
-            comments:COMMENTS,
             favorites:[]
         }
         this.markFavorite=this.markFavorite.bind(this);
@@ -65,7 +69,7 @@ class DishDetail extends Component{
 
     markFavorite(dishId){
         this.setState({
-            favorite:this.state.favorites.concat(dishId)
+            favorites:this.state.favorites.concat(dishId)
         });
     }
 
@@ -77,13 +81,13 @@ class DishDetail extends Component{
        const dishId=this.props.navigation.getParam('dishId','');
     return(
         <ScrollView>
-        <RenderCard dish={this.state.dishes[+dishId]} 
+        <RenderCard dish={this.props.dishes.dishes[+dishId]} 
             favorite={this.state.favorites.some(el=>el===dishId)} onPress={()=>this.markFavorite(dishId)}
         />
-        <RenderComments comments={this.state.comments.filter((comment)=> comment.dishId === dishId)}/>
+        <RenderComments comments={this.props.comments.comments.filter((comment)=> comment.dishId === dishId)}/>
         </ScrollView>
 
     );
    }
 }
-export default DishDetail;
+export default connect(mapStateToProps)(DishDetail);
